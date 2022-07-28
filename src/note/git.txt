@@ -1,0 +1,140 @@
+本地区域
+    工作区 
+        写的代码的区域
+    暂存区 
+        工作区内容必须添加到(记录到)暂存区 git才能识别到 (git add)
+    本地仓库
+        把暂存区的内容提交到本地仓库 才会生成历史版本 (git commit)
+远程区域
+    远程仓库 
+        本地仓库形成的历史版本可以推送到远程仓库 (git push)
+    远程仓库分类
+        GitLab(局域网)
+        GitHub(国外公网)
+        Gitee(国内公网)
+
+配置文件 
+    系统配置文件
+        /usr/local/git/etc/gitconfig
+       git config --system ...
+    用户配置文件
+        ~/.gitconfig 
+        git config --global ...
+
+配置用户签名
+    git config --global user.name xxx
+    用户名的作用是区分不同操作者身份 用户的签名信息在每一个版本的提交信息中能够看到 以此确认本次提交是
+    谁做的 Git首次安装后必须设置一下用户签名 否则无法提交代码
+    用户签名和GitHub账号没有任何关系
+配置用户邮箱
+    git config --global user.email xxx
+
+git常用命令
+    git init 将某个项目目录变为git操作目录 生成git本地仓库 即该项目目录可以使用git管理
+    git status 初始化仓库后默认工作在master分支 当工作区与仓库区不一致时会有提示
+    git add [files] 从工作区记录到暂存区
+    git rm --cached [file] 取消文件暂存记录
+    git commit -m [message] [file] 从暂存区提交到仓库
+    git reflog 查看本地仓库简单信息
+    git log [--pretty=oneline] 查看本地仓库详细信息
+    git diff 对比工作区和仓库的文件
+    git checkout -- name 工作区文件改错了 可以把版本改回仓库区当前的版本
+    git mv [file] [path] 跟add一个级别 工作区和暂存区都有影响
+    git rm [file]
+.gitignore文件
+    在Git项目中可以通过在项目的某个文件夹下定义 .gitignore文件的方式 规定相应的忽略规则 用来管理
+    当前文件夹下的文件的git提交行为 .gitignore文件时可以提交到公有仓库中 这就为项目下的所有开发者
+    都共享一套定义好的忽略规则 在.gitignore文件中 遵循相应的语法 在每一行指定一个忽略规则
+.gitignore忽略规则
+    file 表示忽略file文件
+    *.a 表示忽略所有.a结尾的文件
+    !lib.a 表示除lib.a外
+    build/表示忽略build目录下的所有文件 过滤整个build文件夹
+
+版本控制
+    查看版本号等信息 git log [--pretty=oneline]
+    退回一个版本 git reset --hard HEAD^ HEAD是当前版本指针 ^表示上一个版本 ^^表示上两个
+    返回指定版本 git reset --hard [版本号前7位]
+    查询所有操作记录 git reflog
+
+创建标签
+    在项目的重要commit位置添加快照 保存当时的工作状态 一般用于版本迭代
+        git tag [tag_name] [commit_id] -m [message]
+        commit_id可以不写则默认标签表示最新的commit_id位置 message也可以不写 但是最好添加
+    查看标签列表 
+        git tag
+    查看标签详细信息 
+        git show [tag_name]
+        git reset --hard tag_name 退回版本
+    删除标签 
+        git tag -d [tag_name]
+
+保存工作区
+    保存工作区内容
+        git stash save [message] 保存新内容后内容消失 变回上一次提交的内容（改变之前的内容）
+    查看保存过的工作区 
+        git stash list
+    应用工作区 
+        git stash apply [stash@{1}]
+    删除工作区 
+        git stash drop [stash@{1}]
+    清空工作区 
+        git stash clear
+
+分支管理
+    查看分支情况(前面带*的分支表示当前工作分支)
+        git branch -v
+    创建分支(基于a分支创建b分支 此时b分支会拥有a分支全部内容 在创建b分支时最好保持a分支干净状态) 
+        git branch [name]
+    切换分支 
+        git checkout name
+    创建并切换分支 
+        git checkout -b name
+    合并分支 
+        git merge wanted_merge_branch_name
+    删除没有被合并的小分支 
+        git branch -D name
+    删除被合并了的小分支 
+        git branch -d name
+
+版本冲突问题    
+    如果b分支发现原a分支已经被自己外的分支修改 则会版本发生冲突 合并发生冲突时合并版本的代码会保存在工作区
+    如果冲突是因为新增等不会互相影响的操作时需要核对内容无误再提交到仓库
+    如果是修改或删除而且互相影响了则需要手动修改再提交到仓库
+
+    <<<<<<< HEAD 
+    (当前分支的修改内容)
+    ======= 
+    (other_branch分支的修改内容)
+    >>>>>>> other_branch
+    
+    修改成合适内容后使用 git add添加到暂存区 在使用 git commit (不加文件名) 提交到仓库中
+
+建立远程仓库
+    查看当前所有远程仓库
+        git remote -v
+    创建远程仓库并起别名
+        git remote add name url
+    推送到远程仓库
+        git push url/name branch 
+    拉取到本地仓库
+        git pull url/name branch
+    下载远程仓库
+        git clone url
+
+SSH免密登录
+    生成加密文件
+        ssh-keygen -t rsa -C 注释
+    把加密文件中的公钥添加到 github 的 SSH and GPG keys 中
+    后续我们就可以通过SSH免密登录持有我们公钥的账户
+
+IDEA集成GIT
+    添加xxx.ignore文件
+    向用户配置文件 ~/.gitconfig 添加配置项
+        git config --global core.excludesfile '~/ideaGit.ignore'
+    初始化本地库
+        IDEA - VCS - Create Git Repository
+    初始化远程仓库
+        Preferences - Version Control - GitHub
+        Git - Share Project on GitHub
+        
